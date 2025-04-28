@@ -10,24 +10,13 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
         [HttpGet]
         public IEnumerable<Student> GetStudents()
         {
-            return new List<Student>
-            {
-                new Student
-                {
-                    Id = 1,
-                    StudentName = "Ali",
-                    Email = "Example@gmail.com",
-                    Address = "Tashkent"
-                },
-                new Student
-                {
-                    Id = 1,
-                    StudentName = "Ali",
-                    Email = "Example@gmail.com",
-                    Address = "Tashkent"
-                }
+            return StudentRepasitory.Students;
+        }
 
-            };
+        [HttpGet("{id:int}")]
+        public Student GetStudentById(int id)
+        {
+            return StudentRepasitory.Students.Where(s => s.Id == id).FirstOrDefault();
         }
     }
 }
