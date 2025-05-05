@@ -11,12 +11,34 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
         [Route("All", Name = "GetAllStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<Student>> GetStudents()
+        public ActionResult<IEnumerable<StudentDto>> GetStudents()
         {
-            var students = StudentRepasitory.Students;
-            if(students == null)
-                return BadRequest();
-            return Ok();
+            //var students = StudentRepasitory.Students;
+            //if(students == null)
+            //    return BadRequest();
+
+            //List<StudentDto> lst = new List<StudentDto>();
+
+            //foreach (var item in students)
+            //{
+            //    var student = new StudentDto()
+            //    {
+            //        Id = item.Id,
+            //        StudentName = item.StudentName,
+            //        Email = item.Email,
+            //        Address = item.Address,
+            //    };
+            //    lst.Add(student);
+            //}
+
+            
+            return Ok(StudentRepasitory.Students.Select(c => new StudentDto
+            {
+                Id = c.Id,
+                StudentName = c.StudentName,
+                Email = c.Email,
+                Address = c.Address,
+            }));
         }
 
         [HttpGet("{id:int}")]
