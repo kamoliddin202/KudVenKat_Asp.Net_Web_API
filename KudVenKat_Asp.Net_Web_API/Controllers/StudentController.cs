@@ -8,32 +8,53 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
     public class StudentController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Student> GetStudents()
+        [Route("All", Name = "GetAllStudents")]
+        public ActionResult<IEnumerable<Student>> GetStudents()
         {
-            return StudentRepasitory.Students;
+            return Ok(StudentRepasitory.Students);
         }
 
         [HttpGet("{id:int}")]
-        public Student GetStudentById(int id)
+        public ActionResult<Student> GetStudentById(int id)
         {
-            return StudentRepasitory.Students.Where(s => s.Id == id).FirstOrDefault();
+            if (id <= 0) // 404 - not found - client error
+                return BadRequest($"Id must be greater then 0");
+
+            var student = StudentRepasitory.Students.Where(i => i.Id == id).FirstOrDefault();
+
+            if (student == null)
+                return BadRequest($"The student with Id = {id} not found !");
+
+            return student;
         }
 
         [HttpGet("{s:alpha}", Name = "GetStudentByName")]
         //[Route("name")]
-        public string GetStudentByName(string name)
+        public ActionResult<Student> GetStudentByName(string name)
         {
-            var result = StudentRepasitory.Students.Where(s => s.StudentName == name).FirstOrDefault();
-            return result.StudentName;
+            if (string.IsNullOrEmpty(name)) // 404 - not found - client error
+                return BadRequest($"Name null bo'lishi mumkin emas !");
+
+            var student = StudentRepasitory.Students.Where(i => i.StudentName == name).FirstOrDefault();
+
+            if (student == null)
+                return BadRequest($"The student with Name = {name} not found !");
+
+            return student;
         }
 
-        [HttpDelete("{id:int}")]
-        public bool DeleteStudent(int id)
+        [HttpDelete("{id:int}")]                    
+        public ActionResult<bool> DeleteStudent(int id)
         {
-            var result = StudentRepasitory.Students.FirstOrDefault(c => c.Id == id);
-            StudentRepasitory.Students.Remove(result);
-            return true;
+            if (id <= 0) // 404 - not found - client error
+                return BadRequest($"Id must be greater then 0");
 
+            var student = StudentRepasitory.Students.Where(i => i.Id == id).FirstOrDefault();
+
+            if (student == null)
+                return BadRequest($"The student with Id = {id} not found !");
+
+            return true;
 
         }
 
