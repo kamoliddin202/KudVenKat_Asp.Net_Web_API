@@ -9,12 +9,20 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
     {
         [HttpGet]
         [Route("All", Name = "GetAllStudents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IEnumerable<Student>> GetStudents()
         {
-            return Ok(StudentRepasitory.Students);
+            var students = StudentRepasitory.Students;
+            if(students == null)
+                return BadRequest();
+            return Ok();
         }
 
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Student> GetStudentById(int id)
         {
             if (id <= 0) // 404 - not found - client error
@@ -23,12 +31,15 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
             var student = StudentRepasitory.Students.Where(i => i.Id == id).FirstOrDefault();
 
             if (student == null)
-                return BadRequest($"The student with Id = {id} not found !");
+                return NotFound($"The student with Id = {id} not found !");
 
             return student;
         }
 
         [HttpGet("{s:alpha}", Name = "GetStudentByName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[Route("name")]
         public ActionResult<Student> GetStudentByName(string name)
         {
@@ -38,12 +49,15 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
             var student = StudentRepasitory.Students.Where(i => i.StudentName == name).FirstOrDefault();
 
             if (student == null)
-                return BadRequest($"The student with Name = {name} not found !");
+                return NotFound($"The student with Name = {name} not found !");
 
             return student;
         }
 
-        [HttpDelete("{id:int}")]                    
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<bool> DeleteStudent(int id)
         {
             if (id <= 0) // 404 - not found - client error
@@ -52,7 +66,7 @@ namespace KudVenKat_Asp.Net_Web_API.Controllers
             var student = StudentRepasitory.Students.Where(i => i.Id == id).FirstOrDefault();
 
             if (student == null)
-                return BadRequest($"The student with Id = {id} not found !");
+                return NotFound($"The student with Id = {id} not found !");
 
             return true;
 
